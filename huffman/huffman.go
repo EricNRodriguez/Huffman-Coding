@@ -70,7 +70,7 @@ func getCharacterFrequencies(chars []rune) (frequencies map[rune]int) {
 	return
 }
 
-//in order traversal, records path to every node
+//tree traversal, records path to every node
 func traverseAndRecord(n *Node, encoding map[rune][]int, path []int) {
 	if n.Left == nil && n.Right == nil {
 		encoding[n.Value] = path
