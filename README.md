@@ -1,0 +1,2 @@
+# Huffman-Encoding
+NOT THOROUGHLY TESTED
