@@ -5,35 +5,42 @@ import (
 	"fmt"
 )
 
-func EncodeMessage(message string) (encodedMessage []rune, encoding map[rune]int, err error) {
-	frequencies := getCharacterFrequencies([]rune(message))
-	encoding, err = encodeCharacters(frequencies)
-
-	return
+type node struct {
+	value rune
+	encoding []int
+	left *node
+	right *node
 }
 
-func encodeCharacters(charFreq map[rune]int) (encoding map[rune]int, err error) {
+func EncodeMessage(message string) (encodedMessage []int, encoding map[rune][]int, err error) {
+	charFreq := getCharacterFrequencies([]rune(message))
 	charFreqHeap := minHeap.MinHeap{}
 	for char, freq := range charFreq {
-		charFreqHeap.Insert(char, freq)
+		charFreqHeap.Insert(&node{value:char}, freq)
 	}
 	for charFreqHeap.Size > 1 {
 		minOne, _ := charFreqHeap.RemoveMin()
 		minTwo, _ := charFreqHeap.RemoveMin()
-		value := []interface{}{
-			nil,
-			minOne,
-			minTwo,
-		}
-		charFreqHeap.Insert(value, minOne.Frequency + minTwo.Frequency)
+		charFreqHeap.Insert(
+			&node{
+				69,
+				[]int{},
+				minOne.Value.(*node),
+				minTwo.Value.(*node),
+			},
+			minOne.Frequency + minTwo.Frequency)
 	}
-	huffmanTree, _ := charFreqHeap.RemoveMin()
+	huffmanTreeRoot, _ := charFreqHeap.RemoveMin()
+	encoding = make(map[rune][]int)
+	traverseAndRecord(huffmanTreeRoot.Value.(*node), encoding)
 
-	fmt.Println(huffmanTree.Value)
 
+	for _, char := range []rune(message) {
+		for _, b := range encoding[char] {
+			encodedMessage = append(encodedMessage, b)
+		}
+	}
 	return
-
-
 }
 
 func getCharacterFrequencies(chars []rune) (frequencies map[rune]int) {
@@ -47,3 +54,22 @@ func getCharacterFrequencies(chars []rune) (frequencies map[rune]int) {
 	}
 	return
 }
+
+//in order traversal, records path to every node
+func traverseAndRecord(n *node, encoding map[rune][]int) {
+	if n.left == nil && n.right == nil {
+		encoding[n.value] = n.encoding
+		fmt.Println(string(n.value))
+	}
+	if n.left != nil {
+		n.left.encoding = append(n.encoding, 1)
+		traverseAndRecord(n.left, encoding)
+	}
+	if n.right != nil {
+		n.right.encoding = append(n.encoding, 0)
+		traverseAndRecord(n.right, encoding)
+	}
+	return
+}
+
+
