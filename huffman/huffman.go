@@ -2,43 +2,58 @@ package huffman
 
 import (
 	"Huffman/minHeap"
-	"fmt"
 )
 
-type node struct {
-	value rune
-	encoding []int
-	left *node
-	right *node
+type Node struct {
+	Value rune
+	Left *Node
+	Right *Node
 }
 
-func EncodeMessage(message string) (encodedMessage []int, encoding map[rune][]int, err error) {
+type HuffmanTree struct {
+	Root *Node
+	Size int
+}
+
+//TODO:
+// - Return encoded Message as io reader
+// - Write Decoder
+
+func EncodeMessage(message string) (encodedMessage []int, huffmanTree *HuffmanTree, err error) {
 	charFreq := getCharacterFrequencies([]rune(message))
-	charFreqHeap := minHeap.MinHeap{}
-	for char, freq := range charFreq {
-		charFreqHeap.Insert(&node{value:char}, freq)
-	}
-	for charFreqHeap.Size > 1 {
-		minOne, _ := charFreqHeap.RemoveMin()
-		minTwo, _ := charFreqHeap.RemoveMin()
-		charFreqHeap.Insert(
-			&node{
-				69,
-				[]int{},
-				minOne.Value.(*node),
-				minTwo.Value.(*node),
-			},
-			minOne.Frequency + minTwo.Frequency)
-	}
-	huffmanTreeRoot, _ := charFreqHeap.RemoveMin()
-	encoding = make(map[rune][]int)
-	traverseAndRecord(huffmanTreeRoot.Value.(*node), encoding)
-
-
+	huffTree, err := buildHuffmanTree(charFreq)
+	encoding := make(map[rune][]int)
+	traverseAndRecord(huffTree.Root, encoding, []int{})
 	for _, char := range []rune(message) {
 		for _, b := range encoding[char] {
 			encodedMessage = append(encodedMessage, b)
 		}
+	}
+	return
+}
+
+func buildHuffmanTree(frequencies map[rune]int) (tree *HuffmanTree, err error) {
+	charFreqHeap := minHeap.MinHeap{}
+	for char, freq := range frequencies {
+		charFreqHeap.Insert(&Node{Value:char}, freq)
+	}
+	size := 0
+	for charFreqHeap.Size > 1 {
+		minOne, _ := charFreqHeap.RemoveMin()
+		minTwo, _ := charFreqHeap.RemoveMin()
+		charFreqHeap.Insert(
+			&Node{
+				69,
+				minOne.Value.(*Node),
+				minTwo.Value.(*Node),
+			},
+			minOne.Frequency + minTwo.Frequency)
+		size ++
+	}
+	root, _ := charFreqHeap.RemoveMin()
+	tree = &HuffmanTree{
+		root.Value.(*Node),
+		size,
 	}
 	return
 }
@@ -56,18 +71,15 @@ func getCharacterFrequencies(chars []rune) (frequencies map[rune]int) {
 }
 
 //in order traversal, records path to every node
-func traverseAndRecord(n *node, encoding map[rune][]int) {
-	if n.left == nil && n.right == nil {
-		encoding[n.value] = n.encoding
-		fmt.Println(string(n.value))
+func traverseAndRecord(n *Node, encoding map[rune][]int, path []int) {
+	if n.Left == nil && n.Right == nil {
+		encoding[n.Value] = path
 	}
-	if n.left != nil {
-		n.left.encoding = append(n.encoding, 1)
-		traverseAndRecord(n.left, encoding)
+	if n.Left != nil {
+		traverseAndRecord(n.Left, encoding, append(path, 1))
 	}
-	if n.right != nil {
-		n.right.encoding = append(n.encoding, 0)
-		traverseAndRecord(n.right, encoding)
+	if n.Right != nil {
+		traverseAndRecord(n.Right, encoding, append(path, 0))
 	}
 	return
 }
