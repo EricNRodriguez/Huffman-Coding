@@ -3,25 +3,28 @@ package test
 import (
 	"Huffman/huffman"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"strings"
 	"testing"
 	"time"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestRandomMessage(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
-	chars := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 	length := rand.Intn(100)
-	var b strings.Builder
+	b := strings.Builder{}
 	for i := 0; i < length; i++ {
-		b.WriteRune(chars[rand.Intn(len(chars))])
+		b.WriteRune(rune(rand.Intn(126)))
 	}
-	encodedMessage, huffmanTree, _ :=  huffman.EncodeMessage(b.String())
+	encodedMessage, huffmanTree, err := huffman.EncodeMessage(b.String())
+	if err != nil {
+		assert.Error(t, err, "[ERR] Encoding message failed")
+	}
 	message, err := huffman.DecodeMessage(encodedMessage, huffmanTree)
 	if err != nil {
-		fmt.Println(err)
+		assert.Error(t, err, "[ERR] Decoding message failed")
 	}
-	assert.Equal(t, encodedMessage, message, "Message should be identical after encoding-decoding")
+	assert.Equal(t, b.String(), message, "Message should be identical after encoding-decoding")
+	fmt.Println(message)
 }

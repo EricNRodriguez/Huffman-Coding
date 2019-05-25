@@ -9,7 +9,7 @@ import (
 
 type Node struct {
 	Value rune
-	Left *Node
+	Left  *Node
 	Right *Node
 }
 
@@ -61,7 +61,7 @@ func DecodeMessage(encodedMessage StringEncoding, huffmanTree *HuffmanTree) (mes
 func generateHuffmanTree(frequencies map[rune]int) (tree *HuffmanTree, err error) {
 	charFreqHeap := minHeap.MinHeap{}
 	for char, freq := range frequencies {
-		charFreqHeap.Insert(&Node{Value:char}, freq)
+		charFreqHeap.Insert(&Node{Value: char}, freq)
 	}
 	size := 0
 	for charFreqHeap.Size > 1 {
@@ -75,12 +75,12 @@ func generateHuffmanTree(frequencies map[rune]int) (tree *HuffmanTree, err error
 		}
 		charFreqHeap.Insert(
 			&Node{
-				69,
+				0,
 				minOne.Value.(*Node),
 				minTwo.Value.(*Node),
 			},
-			minOne.Frequency + minTwo.Frequency)
-		size ++
+			minOne.Frequency+minTwo.Frequency)
+		size++
 	}
 	root, err := charFreqHeap.RemoveMin()
 	if err != nil {
@@ -119,5 +119,3 @@ func traverseAndRecord(n *Node, encoding map[rune][]int, path []int) {
 	}
 	return
 }
-
-
