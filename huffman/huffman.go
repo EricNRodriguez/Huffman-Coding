@@ -75,7 +75,7 @@ func generateHuffmanTree(frequencies map[rune]int) (tree *HuffmanTree, err error
 		}
 		charFreqHeap.Insert(
 			&Node{
-				69,
+				0,
 				minOne.Value.(*Node),
 				minTwo.Value.(*Node),
 			},
