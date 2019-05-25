@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f4271804-7d2b-44c0-a2a8-632cb1ff0251" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/huffman/huffman.go" beforeDir="false" afterPath="$PROJECT_DIR$/huffman/huffman.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,7 +17,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/minHeap/min_heap.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="384">
+            <state relative-caret-position="615">
               <caret line="43" column="176" selection-start-line="43" selection-start-column="176" selection-end-line="43" selection-end-column="176" />
             </state>
           </provider>
@@ -24,8 +26,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/huffman/huffman.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="505">
-              <caret line="77" selection-start-line="77" selection-end-line="77" />
+            <state relative-caret-position="461">
+              <caret line="117" column="6" selection-start-line="117" selection-start-column="4" selection-end-line="117" selection-end-column="6" />
               <folding>
                 <element signature="e#17#53#0" expanded="true" />
               </folding>
@@ -36,8 +38,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="11241">
-              <caret line="97467" column="20" selection-start-line="97467" selection-start-column="20" selection-end-line="97467" selection-end-column="20" />
+            <state relative-caret-position="90">
+              <caret line="10" column="99" selection-start-line="10" selection-start-column="99" selection-end-line="10" selection-end-column="99" />
             </state>
           </provider>
         </entry>
@@ -50,6 +52,11 @@
         <option value="Go File" />
       </list>
     </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>print</find>
+    </findStrings>
   </component>
   <component name="GOROOT" path="/usr/local/Cellar/go/1.11.2/libexec" />
   <component name="Git.Settings">
@@ -165,15 +172,15 @@
     <entry file="file://$PROJECT_DIR$/huffmanTree/huffman_tree.go" />
     <entry file="file://$PROJECT_DIR$/minHeap/min_heap.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
+        <state relative-caret-position="615">
           <caret line="43" column="176" selection-start-line="43" selection-start-column="176" selection-end-line="43" selection-end-column="176" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/huffman/huffman.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="505">
-          <caret line="77" selection-start-line="77" selection-end-line="77" />
+        <state relative-caret-position="461">
+          <caret line="117" column="6" selection-start-line="117" selection-start-column="4" selection-end-line="117" selection-end-column="6" />
           <folding>
             <element signature="e#17#53#0" expanded="true" />
           </folding>
@@ -182,8 +189,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11241">
-          <caret line="97467" column="20" selection-start-line="97467" selection-start-column="20" selection-end-line="97467" selection-end-column="20" />
+        <state relative-caret-position="90">
+          <caret line="10" column="99" selection-start-line="10" selection-start-column="99" selection-end-line="10" selection-end-column="99" />
         </state>
       </provider>
     </entry>

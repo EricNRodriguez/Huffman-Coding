@@ -2,6 +2,9 @@ package huffman
 
 import (
 	"Huffman/minHeap"
+	"bytes"
+	"errors"
+	"fmt"
 )
 
 type Node struct {
@@ -15,32 +18,61 @@ type HuffmanTree struct {
 	Size int
 }
 
-//TODO:
-// - Return encoded Message as io reader
-// - Write Decoder
+type StringEncoding []int8
 
-func EncodeMessage(message string) (encodedMessage []int, huffmanTree *HuffmanTree, err error) {
+func EncodeMessage(message string) (encodedMessage StringEncoding, huffmanTree *HuffmanTree, err error) {
 	charFreq := getCharacterFrequencies([]rune(message))
-	huffTree, err := buildHuffmanTree(charFreq)
+	huffmanTree, err = generateHuffmanTree(charFreq)
+	if err != nil {
+		err = errors.New(fmt.Sprintf("[ERR] Failed huffman tree generation | %s", err.Error()))
+		return
+	}
 	encoding := make(map[rune][]int)
-	traverseAndRecord(huffTree.Root, encoding, []int{})
+	traverseAndRecord(huffmanTree.Root, encoding, []int{})
 	for _, char := range []rune(message) {
 		for _, b := range encoding[char] {
-			encodedMessage = append(encodedMessage, b)
+			encodedMessage = append(encodedMessage, int8(b))
 		}
 	}
 	return
 }
 
-func buildHuffmanTree(frequencies map[rune]int) (tree *HuffmanTree, err error) {
+func DecodeMessage(encodedMessage StringEncoding, huffmanTree *HuffmanTree) (message string, err error) {
+	if huffmanTree == nil {
+		err = errors.New("[ERR] nil huffman tree ")
+		return
+	}
+	messageBuffer := bytes.Buffer{}
+	currentNode := huffmanTree.Root
+	for _, b := range encodedMessage {
+		if currentNode.Left == nil && currentNode.Right == nil {
+			messageBuffer.WriteString(string(currentNode.Value))
+			currentNode = huffmanTree.Root
+		} else if b == 1 {
+			currentNode = currentNode.Left
+		} else {
+			currentNode = currentNode.Right
+		}
+	}
+	message = messageBuffer.String()
+	return
+}
+
+func generateHuffmanTree(frequencies map[rune]int) (tree *HuffmanTree, err error) {
 	charFreqHeap := minHeap.MinHeap{}
 	for char, freq := range frequencies {
 		charFreqHeap.Insert(&Node{Value:char}, freq)
 	}
 	size := 0
 	for charFreqHeap.Size > 1 {
-		minOne, _ := charFreqHeap.RemoveMin()
-		minTwo, _ := charFreqHeap.RemoveMin()
+		minOne, err := charFreqHeap.RemoveMin()
+		if err != nil {
+			return nil, err
+		}
+		minTwo, err := charFreqHeap.RemoveMin()
+		if err != nil {
+			return nil, err
+		}
 		charFreqHeap.Insert(
 			&Node{
 				69,
@@ -50,7 +82,10 @@ func buildHuffmanTree(frequencies map[rune]int) (tree *HuffmanTree, err error) {
 			minOne.Frequency + minTwo.Frequency)
 		size ++
 	}
-	root, _ := charFreqHeap.RemoveMin()
+	root, err := charFreqHeap.RemoveMin()
+	if err != nil {
+		return
+	}
 	tree = &HuffmanTree{
 		root.Value.(*Node),
 		size,
@@ -73,7 +108,8 @@ func getCharacterFrequencies(chars []rune) (frequencies map[rune]int) {
 //tree traversal, records path to every node
 func traverseAndRecord(n *Node, encoding map[rune][]int, path []int) {
 	if n.Left == nil && n.Right == nil {
-		encoding[n.Value] = path
+		encoding[n.Value] = make([]int, len(path)+1)
+		copy(encoding[n.Value], path)
 	}
 	if n.Left != nil {
 		traverseAndRecord(n.Left, encoding, append(path, 1))
