@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Huffman/huffman"
+	"Huffman-Coding/huffman"
 	"fmt"
 )
 
