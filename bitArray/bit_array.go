@@ -1,39 +1,49 @@
-package bitArray
+package main
 
 import (
+	"errors"
 	"math"
 )
 
-type IntegerSet []uint64
-
-func (s *IntegerSet) Add(x uint64) {
-	cell, bit := uint64(math.Floor(float64(x)/64)), x%64
-	for cell >= uint64(len(*s)) {
-		*s = append(*s, 0)
-	}
-	(*s)[cell] |= (1 << bit)
+type BitArray struct {
+	Array 	[]uint64
+	length 	int
 }
 
-func (s *IntegerSet) Remove(x uint64) {
-	cell, bit := x/64, x%64
-	if cell < uint64(len(*s)) {
-		(*s)[cell] ^= (1 << bit)
+func (b *BitArray) Add(x int) error {
+	if x != 1 && x != 0 {
+		return errors.New("Non bit element inserted into array (1 and 0)")
 	}
+	if b.length == len(b.Array) * 64 {
+		b.Array = append(b.Array, uint64(x))
+		b.length ++
+		return nil
+	}
+	if x == 0 {
+		b.Array[len(b.Array)-1] = b.Array[len(b.Array)-1] << 1
+	} else {
+		b.Array[len(b.Array)-1] = (b.Array[len(b.Array)-1] << 1) | 1
+	}
+	b.length ++
+	return nil
 }
 
-func (s *IntegerSet) Len() int {
-	c := 0
-	for i := 0; i < len(*s)*64; i++ {
-		cell, bit := i/64, i%64
-		if ((*s)[cell] & (1 << uint64(bit))) != 0 {
-			c += 1
-		}
+func (b *BitArray) Pop() (x int, err error) {
+	if b.length == 0 {
+		return 0, errors.New("No elements remaining in bit array")
 	}
-	return c
+	// reducing size of the array as elements are removed
+	if int(math.Ceil(float64(b.length/64))) < len(b.Array) {
+		b.Array = b.Array[:int(math.Ceil(float64(b.length/64)))+1]
+	}
+	if (b.Array[len(b.Array)-1] >> uint64((b.length % 64)-1)) % 2 == 0 {
+		x = 0
+	} else {
+		x = 1
+	}
+	b.length--
+	return
 }
 
-func (s *IntegerSet) Clear() {
-	for i := 0; i < len(*s); i++ {
-		(*s)[i] = 0
-	}
-}
+
+
