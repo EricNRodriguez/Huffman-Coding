@@ -2,6 +2,7 @@ package huffman
 
 import (
 	"Huffman/minHeap"
+	"Huffman/bitStack"
 	"bytes"
 	"errors"
 	"fmt"
@@ -18,10 +19,9 @@ type HuffmanTree struct {
 	Size int
 }
 
-type StringEncoding []int8
-
-func EncodeMessage(message string) (encodedMessage StringEncoding, huffmanTree *HuffmanTree, err error) {
-	charFreq := getCharacterFrequencies([]rune(message))
+func EncodeMessage(message string) (s bitStack.BitStack, huffmanTree *HuffmanTree, err error) {
+	chars := []rune(message)
+	charFreq := getCharacterFrequencies(chars)
 	huffmanTree, err = generateHuffmanTree(charFreq)
 	if err != nil {
 		err = errors.New(fmt.Sprintf("[ERR] Failed huffman tree generation | %s", err.Error()))
@@ -29,26 +29,28 @@ func EncodeMessage(message string) (encodedMessage StringEncoding, huffmanTree *
 	}
 	encoding := make(map[rune][]int)
 	traverseAndRecord(huffmanTree.Root, encoding, []int{})
-	for _, char := range []rune(message) {
-		for _, b := range encoding[char] {
-			encodedMessage = append(encodedMessage, int8(b))
+	for i := len(chars) - 1; i >= 0; i-- {
+		for b := len(encoding[chars[i]]) - 1; b >= 0; b-- {
+			s.Push(uint64(encoding[chars[i]][b]))
 		}
 	}
 	return
 }
 
-func DecodeMessage(encodedMessage StringEncoding, huffmanTree *HuffmanTree) (message string, err error) {
+func DecodeMessage(s bitStack.BitStack, huffmanTree *HuffmanTree) (message string, err error) {
 	if huffmanTree == nil {
 		err = errors.New("[ERR] nil huffman tree ")
 		return
 	}
 	messageBuffer := bytes.Buffer{}
 	currentNode := huffmanTree.Root
-	for _, b := range encodedMessage {
+	var bit uint64
+	for s.Height > 0 {
+		bit, _ = s.Pop()
 		if currentNode.Left == nil && currentNode.Right == nil {
 			messageBuffer.WriteString(string(currentNode.Value))
 			currentNode = huffmanTree.Root
-		} else if b == 1 {
+		} else if bit == 1 {
 			currentNode = currentNode.Left
 		} else {
 			currentNode = currentNode.Right

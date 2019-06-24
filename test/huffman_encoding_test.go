@@ -2,7 +2,6 @@ package test
 
 import (
 	"Huffman/huffman"
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"strings"
@@ -26,5 +25,4 @@ func TestRandomMessage(t *testing.T) {
 		assert.Error(t, err, "[ERR] Decoding message failed")
 	}
 	assert.Equal(t, b.String(), message, "Message should be identical after encoding-decoding")
-	fmt.Println(message)
 }
